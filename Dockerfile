@@ -12,5 +12,6 @@
     ENV PORT=${PORT} 
     EXPOSE ${PORT}
     
-    CMD ["bun", "run", "start"]
+    RUN bun run build:docker
+    CMD ["./server"]
 

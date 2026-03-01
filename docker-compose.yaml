@@ -19,9 +19,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    depends_on:
-      redis:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]
       interval: 600s
