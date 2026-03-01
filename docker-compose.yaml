@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      context: .
+      target: build
+      args:
+        PORT: ${PORT:-3131}
+    command: /app/server
+    volumes:
+      - ./src:/app/src
+    networks:
+      app_network:
+        aliases:
+          - app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    expose:
+      - "${PORT}"
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]
+      interval: 600s
+      timeout: 300s
+      retries: 1
+      start_period: 40s
+
+networks:
+  app_network:
+    name: app_network
+    driver: bridge
+
+version: "3.8"
