@@ -6,11 +6,17 @@
     RUN bun install
 
     COPY ./src ./src
-
+    COPY prisma.config.ts ./
     COPY .env ./
+
     ARG PORT
     ENV PORT=${PORT} 
     EXPOSE ${PORT}
+
+
+    ENV DATABASE_URL=${DATABASE_URL}
+    RUN bunx prisma db pull
+    RUN bunx prisma generate
     
     RUN bun run build:docker
     CMD ["./server"]

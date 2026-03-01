@@ -12,9 +12,7 @@ export class HttpServer {
   }
 
   async start() {
-    if (this.server) {
-      return;
-    }
+    if (this.server) return;
 
     await this.app.modules;
 
@@ -26,7 +24,8 @@ export class HttpServer {
   }
 
   async stop() {
-    this.server?.stop();
+    if (!this.server) return;
+    this.server.stop();
     this.server = undefined;
   }
 }

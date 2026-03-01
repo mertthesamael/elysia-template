@@ -44,3 +44,9 @@ package-lock.json
 **/*.bun
 
 .env
+
+/src/generated/prisma
+
+/src/generated/prisma
+
+/src/infra/prisma

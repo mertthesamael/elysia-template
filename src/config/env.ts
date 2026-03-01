@@ -10,6 +10,7 @@ const envSchema = t.Object({
   ),
   PORT: t.Numeric({ default: 3131 }),
   OTEL_EXPORTER_OTLP_ENDPOINT: t.Optional(t.String({ format: "url" })),
+  DATABASE_URL: t.Optional(t.String()),
 });
 
 const envValidator = getSchemaValidator(envSchema, {
@@ -20,10 +21,11 @@ function buildEnvFromSchema(schema: {
   properties: Record<string, { default?: unknown }>;
 }) {
   return Object.fromEntries(
-    Object.entries(schema.properties).map(([key, prop]) => [
-      key,
-      process.env[key] ?? prop.default,
-    ]),
+    Object.entries(schema.properties).map(([key, prop]) => {
+      const raw = process.env[key];
+      const value = raw === "" ? undefined : (raw ?? prop.default);
+      return [key, value];
+    }),
   );
 }
 
@@ -91,6 +93,9 @@ export function loadEnv() {
     server: {
       port: env.PORT,
       otelExporterOtlpEndpoint: env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    },
+    database: {
+      url: env.DATABASE_URL,
     },
   };
 }

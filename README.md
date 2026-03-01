@@ -29,6 +29,37 @@ bun run start
 
 The API will be available at `http://localhost:3131` (or your configured `PORT`).
 
+## Prisma
+
+### Setup (New Project)
+
+If starting fresh, initialize Prisma with a database:
+
+```bash
+bunx --bun prisma init --db --output ./src/infra/prisma
+```
+
+This creates the schema at `src/infra/prisma/schema/` and migrations at `src/infra/prisma/migrations/`.
+
+**Required:** Add `DATABASE_URL` to your `.env`:
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/your_database"
+```
+
+### Commands
+
+```bash
+# Generate Prisma Client
+bunx prisma generate
+
+# Create and apply migrations
+bunx --bun prisma migrate dev --name <migration_name>
+
+# Pull schema from existing database
+bunx prisma db pull
+```
+
 ## Scripts
 
 | Command                | Description                              |
@@ -51,8 +82,13 @@ src/
 │   └── health/
 │       └── routes.ts  # Example: /health endpoint
 ├── middleware/        # Global middleware
-├── common/           # Shared utilities (logger, etc.)
-└── models/            # Schemas, errors, types
+├── common/            # Shared utilities (logger, etc.)
+├── models/            # Schemas, errors, types
+└── infra/             # Infrastructure
+    └── prisma/        # Schema, migrations, generated client
+        ├── schema/
+        ├── migrations/
+        └── client/
 ```
 
 ## Adding a New Module
@@ -73,11 +109,14 @@ export default new Elysia({ prefix: "/users" })
 
 ## Environment Variables
 
-| Variable                      | Required | Default       | Description                             |
-| ----------------------------- | -------- | ------------- | --------------------------------------- |
-| `NODE_ENV`                    | No       | `development` | `development` \| `test` \| `production` |
-| `PORT`                        | No       | `3131`        | Server port                             |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | No       | —             | OpenTelemetry endpoint (optional)       |
+| Variable                      | Required | Default       | Description                                      |
+| ----------------------------- | -------- | ------------- | ------------------------------------------------ |
+| `NODE_ENV`                    | No       | `development` | `development` \| `test` \| `production`          |
+| `PORT`                        | No       | `3131`        | Server port                                      |
+| `DATABASE_URL`                | Yes*     | —             | PostgreSQL connection string (required for Prisma)|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | No       | —             | OpenTelemetry endpoint (optional)                 |
+
+\* Required when using Prisma; add to `.env` before running migrations or `db pull`.
 
 Add new variables in `src/config/env.ts` (schema + validation).
 
