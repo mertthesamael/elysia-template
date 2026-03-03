@@ -11,6 +11,7 @@ const envSchema = t.Object({
   PORT: t.Numeric({ default: 3131 }),
   OTEL_EXPORTER_OTLP_ENDPOINT: t.Optional(t.String({ format: "url" })),
   DATABASE_URL: t.Optional(t.String()),
+  JWT_SECRET: t.String({ default: "change-me-in-production" }),
 });
 
 const envValidator = getSchemaValidator(envSchema, {
@@ -96,6 +97,9 @@ export function loadEnv() {
     },
     database: {
       url: env.DATABASE_URL,
+    },
+    jwt: {
+      secret: env.JWT_SECRET,
     },
   };
 }

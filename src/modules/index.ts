@@ -9,6 +9,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { config } from "../config";
 import cors from "@elysiajs/cors";
 import openapi from "@elysiajs/openapi";
+import bearer from "@elysiajs/bearer";
 
 const modulesDir = import.meta.dir;
 const routeGlob = new Bun.Glob("*/routes.ts");
